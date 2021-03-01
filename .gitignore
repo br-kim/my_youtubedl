@@ -6,6 +6,7 @@ my_video_url.py
 ffprobe.exe
 ffmpeg.exe
 .idea/
+*.exe
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

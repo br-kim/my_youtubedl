@@ -8,17 +8,23 @@ from my_video_url import my_playlist_url1_japan, my_playlist_url2_songs, my_play
 # download() playlist url도 가능.
 
 
-def get_video_ids(playlist_dict, path):
+def get_file_ids(path):
+    file_list = os.listdir(path)
+    ids = []
+
+    for file_name in file_list:
+        v_id = file_name[-15:-4]
+        ids.append(v_id)
+
+    return ids
+
+
+def get_video_ids(playlist_dict, file_id_list):
     """
     playlist 정보와 다운로드 폴더 경로를 받아 다운로드 폴더에 있는 파일 아이디와 비교하여
     폴더에 없는 동영상만 리스트로 반환한다.
     """
-    file_list = os.listdir(path)
-    file_id_list = []
     video_ids = []
-    for file_name in file_list:
-        v_id = file_name[-15:-4]
-        file_id_list.append(v_id)
     entries = playlist_dict["entries"]
     for entry in entries:
         video_id = entry['id']
@@ -51,7 +57,8 @@ ydl_opts = {
 if __name__ == '__main__':
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         playlist_dictionary = ydl.extract_info(my_playlist_url3_piano, download=False)
-        videos_list = get_video_ids(playlist_dictionary, save_path)
+        file_ids = get_file_ids(save_path)
+        videos_list = get_video_ids(playlist_dictionary, file_ids)
         if videos_list:
             ydl.download(videos_list)
         else:
