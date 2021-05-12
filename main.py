@@ -1,7 +1,7 @@
 import youtube_dl
 import os
 
-from my_video_url import my_playlist_url1_japan, my_playlist_url2_songs, my_playlist_url3_piano
+import my_video_url
 
 # ffprobe.exe download
 # ffmpeg.exe download
@@ -9,20 +9,25 @@ from my_video_url import my_playlist_url1_japan, my_playlist_url2_songs, my_play
 
 
 def get_file_ids(path):
+    """
+    path에 있는 다운로드된 파일들의 id를 가져옵니다.
+    :param path: 파일들의 경로
+    :return: 경로에 있는 파일들의 id
+    """
     file_list = os.listdir(path)
     ids = []
-
     for file_name in file_list:
         v_id = file_name[-15:-4]
         ids.append(v_id)
-
     return ids
 
 
 def get_video_ids(playlist_dict, file_id_list):
     """
-    playlist 정보와 다운로드 폴더 경로를 받아 다운로드 폴더에 있는 파일 아이디와 비교하여
-    폴더에 없는 동영상만 리스트로 반환한다.
+    playlist_dict의 id를 가져와서 file_id_list에 있는 id만 반환합니다.
+    :param playlist_dict:
+    :param file_id_list:
+    :return:
     """
     video_ids = []
     entries = playlist_dict["entries"]
@@ -35,7 +40,6 @@ def get_video_ids(playlist_dict, file_id_list):
             print(title, "이미 존재하는 동영상입니다.")
     return video_ids
 
-
 # save path 설정
 # C:\\Users\\USER_NAME\\ + Download Directory
 my_download_path = ['Downloads', 'ytdl_downloads']
@@ -47,6 +51,7 @@ ydl_opts = {
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
         'preferredquality': '192',
+        'nopostoverwrites': True
     }
     ],
     'nooverwrites': True,
@@ -56,10 +61,8 @@ ydl_opts = {
 
 if __name__ == '__main__':
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        playlist_dictionary = ydl.extract_info(my_playlist_url3_piano, download=False)
+        playlist_dictionary = ydl.extract_info(my_video_url.my_playlist_url4_videos, download=False)
         file_ids = get_file_ids(save_path)
         videos_list = get_video_ids(playlist_dictionary, file_ids)
-        if videos_list:
-            ydl.download(videos_list)
-        else:
-            print("플레이리스트에 추가된 동영상 없음.")
+        ydl.download(videos_list)
+    pass
